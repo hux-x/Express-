@@ -23,24 +23,11 @@ app.get('/',(req,res)=>{
 
     res.send("<h1>Home Page</h1> <a href = '/api/products'> Products </a> ")
 })
-app.get('/api/products',(req,res)=>{
-    
-    res.json( data.products.map((product)=>{
-        let {name,id,image} = product
-        return {id,name,image}
-    }))
-})
-app.get('/api/products/:id',(req,res)=>{
-    let singleProduct = data.products.find((product)=> product.id === Number(req.params.id))
-    if(!singleProduct){
-        res.status(404).send("could not find the product")
-    }
-    res.json(singleProduct)
-})
-app.get('/api/query',(req,res)=>{
+app.get('/api/products/query',(req,res)=>{
+
     let params = req.query
     console.log(params)
-    let {search,limit} = params
+    let {search,limit,id} = params
     let response = [...data.products]
     if(search){
         response = response.filter((product)=>{
@@ -51,10 +38,52 @@ app.get('/api/query',(req,res)=>{
     if(limit){
        response = response.slice(0,Number(limit))
     }
-    res.json(response)
+    // if(response){
+    //     return res.json(response)
+    // }
 
+   if(id){
+    let singleProduct = data.products.find((product)=> product.id === Number(id))
+    if(singleProduct){
+       return res.json(singleProduct)  //js will will keep reading the code unless we explicitly return the func 
+                                        //we can only send back one reaponse 
+    }
+   }
+   if (response.length > 0) {
+    return res.json(response);  // Send filtered or limited products if any
+}
 
+    
+     res.json( data.products.map((product)=>{
+        let {name,id,image} = product
+        return {id,name,image}
+    }))
 })
+// app.get('/api/products/:id',(req,res)=>{
+//     let singleProduct = data.products.find((product)=> product.id === Number(req.params.id))
+//     if(!singleProduct){
+//         res.status(404).send("could not find the product")
+//     }
+//     res.json(singleProduct)
+// })
+// app.get('/api/query',(req,res)=>{
+//     let params = req.query
+//     console.log(params)
+//     let {search,limit} = params
+//     let response = [...data.products]
+//     if(search){
+//         response = response.filter((product)=>{
+//            return product.name.startsWith(search)
+//         }
+//      )
+//     }
+//     if(limit){
+//        response = response.slice(0,Number(limit))
+//     }
+//     res.json(response)
+
+
+// })
 
 app.get('/about',(req,res)=>{
     // res.status(200).send("About page")
