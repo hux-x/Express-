@@ -10,12 +10,17 @@ console.log('/api',"testing")
 // next()  //necessary unless the response is being sent from this function 
 // }
 //app.use(middleware)
-app.use([authorize,middleware])
-app.get('/',(req,res)=>{
+// app.use([authorize,middleware])
+app.get('/user/query',[authorize,middleware],(req,res)=>{
 console.log("Home")
-res.status(200).json({page_name : "Home",middleware_comment : res.locals.middleware_comment})
+//res.status(200).json({page_name : "Home",middleware_comment : res.locals.middleware_comment})
+if(req.user){
+    res.status(200).json(req.user)
+}else{
+    res.status(401).send("Unauthorized")
+}
 })
-app.get('/api/about',(req,res)=>{
+app.get('/about',(req,res)=>{
 console.log("About")
 // res.status(200).json({page_name : "About",middleware_comment : res.locals.middleware_comment})
 res.send("About")
